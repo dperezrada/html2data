@@ -11,16 +11,56 @@ A simple way to transform a HTML file or URL to structured data.  You only need 
 
 Example
 =======
-
+Import
+------
 ::
 
-	$ from html2data import HTML2Data
-	$ url = "http://pypi.python.org/pypi/html2data"
-	>> config = [{'name': 'author', 'xpath': '//ul[@class="nodot"]}
+>>> from html2data import HTML2Data
 
-	>> h2d_instance = HTML2Data(html = html)
-	>> print h2d_instance.parse_one(xpath = '//head/title/text()')
-	'Example Page'
+Create instance
+---------------
+::
+
+	>>> html = """<!DOCTYPE html><html lang="en"><head>
+	    	<meta charset="utf-8" />
+	    	<title>Example Page</title>
+	    	<link rel="stylesheet" href="css/main.css" type="text/css" />
+			</head>
+			<body>
+	    		<h1><b>Title</b></h1>
+	    		<div class="description">This is not a valid HTML
+			</body>
+		</html>"""
+	>>> h2d_instance = HTML2Data(html = html) #You can also create it from a url = url
+
+Using XPATH config
+--------------------
+One you have the object 
+::
+
+	>>> config = [
+            {'name': 'header_title', 'xpath': '//head/title/text()'},
+            {'name': 'body_title', 'xpath': '//h1/b/text()'},
+            {'name': 'description', 'xpath': '//div[@class="description"]/text()'},
+        ]
+
+	>>> h2d_instance.parse(config = config)
+	{'header_title': 'Example Page', 'body_title': 'Title', 'description': 'This is not a valid HTML'}
+
+Using CSS SELECTOR config
+---------------------------
+::
+
+	>>> config = [
+	        {'name': 'header_title', 'css': 'head title'},
+	        {'name': 'body_title', 'css': 'h1 b '},
+	        {'name': 'description', 'css': 'div.description'},
+	    ]
+
+	>>> h2d_instance.parse(config = config)
+	{'header_title': 'Example Page', 'body_title': 'Title', 'description': 'This is not a valid HTML'}
+
+
 
 Requirement
 ===========

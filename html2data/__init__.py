@@ -32,8 +32,12 @@ class HTML2Data(object):
 
     @staticmethod
     def _check_config(element):
-        if not (isinstance(element, dict) and element.get('name') and (element.get('xpath') or element.get('css'))):
-            raise Exception('invalid config: type must be dict, name and xpath keys are required')
+        if not isinstance(element, dict):
+            raise Exception('Each element in the config list, must be an dict')
+        elif not element.get('name'):
+            raise Exception('Each element must have the key "name"')
+        elif not (element.get('xpath') or element.get('css')):
+            raise Exception('Each element must have the key "xpath" or "css"')
     
     @staticmethod
     def _get_text(elements):
@@ -63,7 +67,6 @@ class HTML2Data(object):
         if xpath:
             value = self.xpath(xpath.replace('/text()', ''))
         elif css:
-            print "AAAAAAAAAA", css
             value = self.css_select(css)
         value = self._apply_after(value, copy(apply_after), multiple, strip)
         return value
