@@ -15,7 +15,7 @@ setup(
     keywords = "html2data html data xpath crawler transform",
     url = "https://github.com/dperezrada/html2data",
     packages=['html2data', 'tests'],
-    long_description=read('README.md'),
+    long_description=read('README.rst'),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities",

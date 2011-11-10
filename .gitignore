@@ -1,3 +1,4 @@
 dist/
 html2data.egg-info/
 *.pyc
+build
