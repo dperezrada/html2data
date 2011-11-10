@@ -13,7 +13,7 @@ setup(
     description = ("A simple way to transform a HTML file or URL to structured data."),
     license = "BSD",
     keywords = "html2data html data xpath crawler transform",
-    url = "http://packages.python.org/html2data",
+    url = "https://github.com/dperezrada/html2data",
     packages=['html2data', 'tests'],
     long_description=read('README.md'),
     classifiers=[

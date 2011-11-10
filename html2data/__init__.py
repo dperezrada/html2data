@@ -21,10 +21,18 @@ class HTML2Data(object):
     
     def xpath(self, expression):
         return self.tree.xpath(expression)
+    
+    def css_select(self, expression, text = False):
+        from lxml.cssselect import CSSSelector
+        sel = CSSSelector(expression)
+        selected_elements = sel(self.tree)
+        if text:
+            selected_elements = map(lambda x: x.text, selected_elements)
+        return selected_elements
 
     @staticmethod
     def _check_config(element):
-        if not (isinstance(element, dict) and element.get('name') and element.get('xpath')):
+        if not (isinstance(element, dict) and element.get('name') and (element.get('xpath') or element.get('css'))):
             raise Exception('invalid config: type must be dict, name and xpath keys are required')
     
     @staticmethod
@@ -50,9 +58,13 @@ class HTML2Data(object):
             value = after(value)
         return value
             
-    def parse_one(self, xpath, multiple = False, apply_after = [], strip = True):
+    def parse_one(self, xpath = None, css = None, multiple = False, apply_after = [], strip = True):
         #TODO: Be able to return elements and text
-        value = self.xpath(xpath.replace('/text()', ''))
+        if xpath:
+            value = self.xpath(xpath.replace('/text()', ''))
+        elif css:
+            print "AAAAAAAAAA", css
+            value = self.css_select(css)
         value = self._apply_after(value, copy(apply_after), multiple, strip)
         return value
         
@@ -62,6 +74,7 @@ class HTML2Data(object):
             self._check_config(element)
             value = self.parse_one(
                 xpath = element.get('xpath'), 
+                css = element.get('css'),
                 multiple = element.get('multiple', False),
                 apply_after = element.get('apply_after', []),
                 strip = element.get('strip', True)

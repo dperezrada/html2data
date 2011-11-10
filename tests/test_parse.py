@@ -33,6 +33,10 @@ class TestParse(TestCase):
         title = self.html2data_instance.xpath('//head/title/text()')
         self.assertEqual(['Example Page',], title)
     
+    def test_css_select(self):
+        title = self.html2data_instance.css_select('head title', text = True)
+        self.assertEqual(['Example Page',], title)
+    
     def test_parse_one_element(self):
         dict_parsed = self.html2data_instance.parse_one(xpath = '//ul[@id="some_cities"]/li', multiple = True)
         expected_array = ['Santiago', 'Valparaiso']
@@ -44,6 +48,25 @@ class TestParse(TestCase):
             {'name': 'body_title',  'xpath': '//h1/b'},
             {'name': 'description',  'xpath': '//div[@class="description"]', 'strip': False},
             {'name': 'cities',  'xpath': '//ul[@id="some_cities"]/li', 'multiple': True},
+        ]
+        dict_parsed = self.html2data_instance.parse(config)
+        expected_dict = {
+            'title': 'Example Page',
+            'body_title': 'Title',
+            'description': 'This is not a valid XML\n                ',
+            'cities': [
+                'Santiago',
+                'Valparaiso',
+            ]
+        }
+        self.assertEqual(expected_dict, dict_parsed)
+    
+    def test_parse_with_css_config(self):
+        config = [
+            {'name': 'title',  'css': 'head title'},
+            {'name': 'body_title',  'css': 'h1 b'},
+            {'name': 'description',  'css': 'div.description', 'strip': False},
+            {'name': 'cities',  'css': '#some_cities li', 'multiple': True},
         ]
         dict_parsed = self.html2data_instance.parse(config)
         expected_dict = {
