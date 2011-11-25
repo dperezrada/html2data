@@ -9,6 +9,12 @@ Description
 ===========
 A simple way to transform a HTML file or URL to structured data.  You only need to define the xpath to the element. Optionaly you can define functions to be applied after. You can easily write XPATH using the firebug extension, copy XPATH (I recommend edit the XPATH given by firebug, making it shorter).
 
+Installation
+============
+::
+
+	>> easy_install html2data
+
 Example
 =======
 Import
