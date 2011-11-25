@@ -6,13 +6,16 @@ from copy import copy
 from httplib2 import Http
 
 class HTML2Data(object):
-    def __init__(self, html = None, url = None):
-        if not (html or url):
-            raise Exception('html or url parameters are required')
+    def __init__(self, html = None, url = None, tree = None):
+        if not (html or url or tree):
+            raise Exception('html or url or tree parameters are required')
         if url:
             connection = Http()
             header, html = connection.request(url)
-        self.tree = self._get_tree_from_html(html)
+        elif html:
+            self.tree = self._get_tree_from_html(html)
+        else:
+            self.tree = tree
         
     @staticmethod
     def _get_tree_from_html(html):
@@ -45,30 +48,31 @@ class HTML2Data(object):
 
     @staticmethod
     def _strip(elements):
-        return map(lambda x: str.strip(x), elements)
+        return map(lambda x: str.strip(x.encode('utf-8')), elements)
 
     @staticmethod
     def _get_one(elements):
         return (elements or [None])[0]
 
-    def _apply_after(self, value, apply_after, multiple, strip):
+    def _apply_after(self, value, apply_after, multiple, strip, text):
         total_added_after = 0
         if not multiple:
             apply_after.insert(0,  self._get_one)
-        if strip:
+        if strip and text:
             apply_after.insert(0,  self._strip)
-        apply_after.insert(0,  self._get_text)
+        if text:
+            apply_after.insert(0,  self._get_text)
         for after in apply_after:
             value = after(value)
         return value
             
-    def parse_one(self, xpath = None, css = None, multiple = False, apply_after = [], strip = True):
+    def parse_one(self, xpath = None, css = None, multiple = False, apply_after = [], text = True, strip = True):
         #TODO: Be able to return elements and text
         if xpath:
             value = self.xpath(xpath.replace('/text()', ''))
         elif css:
             value = self.css_select(css)
-        value = self._apply_after(value, copy(apply_after), multiple, strip)
+        value = self._apply_after(value, copy(apply_after), multiple, strip, text = text)
         return value
         
     def parse(self, config):
