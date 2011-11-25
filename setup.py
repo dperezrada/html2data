@@ -8,7 +8,7 @@ def read(fname):
 
 setup(
     name = "html2data",
-    version = "0.4.2",
+    version = "0.4.3",
     author = "Daniel Perez Rada",
     author_email = "dperezrada@gmail.com",
     description = ("A simple way to transform a HTML file or URL to structured data."),
