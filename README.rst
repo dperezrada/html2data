@@ -81,7 +81,7 @@ Real life example
 
 	html_instance = HTML2Data(html = html)
 	rows = html_instance.parse_one(css = 'td td tr', multiple = True, text = False)
-	for row_element in rows:
+	for row_element in rows[1:]:
 	    row_in_html = HTML2Data(tree = row_element)
 	    print row_in_html.parse(config = config)
 
